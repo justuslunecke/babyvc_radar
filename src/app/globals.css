@@ -1,26 +1,88 @@
 @import "tailwindcss";
 
-:root {
-  --background: #ffffff;
-  --foreground: #171717;
+/* --------------------------------------------------------------------------
+   baby vc brand tokens — taken from babyvc.co/brandkit
+   Primary:   #EEFB86 yellow, #000000 black
+   Secondary: #FFFFFF white, #F4F3E9 grey
+   Type:      Lexend Deca. Big headings, body at roughly half the heading size.
+              Titles are always bold, never italic.
+   -------------------------------------------------------------------------- */
+@theme {
+  --color-ink: #0e110e;
+  --color-ink-2: #141813;
+  --color-ink-3: #1b201a;
+  --color-cream: #f4f3ec;
+  --color-cream-2: #f4f3e9;
+  --color-yellow: #eefb86;
+  --color-muted: #a3a29a;
+  --color-dim: #6b6a63;
+  --color-alert: #ff6b6b;
+  --color-line: rgba(238, 251, 134, 0.14);
+  --color-line-soft: rgba(244, 243, 236, 0.09);
+
+  --font-sans: var(--font-lexend), ui-sans-serif, system-ui, sans-serif;
+
+  --animate-sweep: sweep 6s linear infinite;
+  --animate-ping-slow: ping-slow 2.6s cubic-bezier(0, 0, 0.2, 1) infinite;
+  --animate-marquee: marquee 42s linear infinite;
+  --animate-rise: rise 0.45s cubic-bezier(0.16, 1, 0.3, 1) both;
 }
 
-@theme inline {
-  --color-background: var(--background);
-  --color-foreground: var(--foreground);
-  --font-sans: var(--font-geist-sans);
-  --font-mono: var(--font-geist-mono);
+@keyframes sweep {
+  from { transform: rotate(0deg); }
+  to   { transform: rotate(360deg); }
+}
+@keyframes ping-slow {
+  0%        { transform: scale(1);   opacity: 0.55; }
+  70%, 100% { transform: scale(3.2); opacity: 0; }
+}
+@keyframes marquee {
+  from { transform: translateX(0); }
+  to   { transform: translateX(-50%); }
+}
+@keyframes rise {
+  from { opacity: 0; transform: translateY(8px); }
+  to   { opacity: 1; transform: none; }
 }
 
-@media (prefers-color-scheme: dark) {
-  :root {
-    --background: #0a0a0a;
-    --foreground: #ededed;
-  }
-}
+html { color-scheme: dark; }
 
 body {
-  background: var(--background);
-  color: var(--foreground);
-  font-family: Arial, Helvetica, sans-serif;
+  background: var(--color-ink);
+  color: var(--color-cream);
+  font-family: var(--font-sans);
+  -webkit-font-smoothing: antialiased;
+}
+
+/* Film grain, borrowed from the brand kit page. Purely decorative. */
+.grain::after {
+  content: "";
+  position: fixed;
+  inset: -50%;
+  z-index: 60;
+  pointer-events: none;
+  opacity: 0.16;
+  background-image: url("data:image/svg+xml,%3Csvg xmlns='http://www.w3.org/2000/svg' width='160' height='160'%3E%3Cfilter id='n'%3E%3CfeTurbulence type='fractalNoise' baseFrequency='0.85' numOctaves='3'/%3E%3C/filter%3E%3Crect width='100%25' height='100%25' filter='url(%23n)'/%3E%3C/svg%3E");
+}
+
+/* The hand-drawn swoosh from the brand kit, used to mark the active tab. */
+.swoosh {
+  background-image: url("/brand/underline-yellow.png");
+  background-repeat: no-repeat;
+  background-size: 100% 100%;
+}
+
+::selection { background: var(--color-yellow); color: #000; }
+
+* { scrollbar-width: thin; scrollbar-color: rgba(238,251,134,0.25) transparent; }
+::-webkit-scrollbar { width: 8px; height: 8px; }
+::-webkit-scrollbar-thumb { background: rgba(238,251,134,0.22); border-radius: 99px; }
+::-webkit-scrollbar-track { background: transparent; }
+
+@media (prefers-reduced-motion: reduce) {
+  *, *::before, *::after {
+    animation-duration: 0.01ms !important;
+    animation-iteration-count: 1 !important;
+    transition-duration: 0.01ms !important;
+  }
 }
