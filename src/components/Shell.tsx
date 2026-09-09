@@ -7,11 +7,11 @@ import { NEW_JOBS } from "@/data/jobs";
 import { useHydrated, useWatchlist } from "@/lib/watchlist";
 
 const TABS = [
-  { href: "/", label: "Radar", hint: "Funds and companies on the map" },
+  { href: "/", label: "Today", hint: "What changed since you last looked" },
+  { href: "/radar", label: "Radar", hint: "Funds and companies on the map" },
   { href: "/signals", label: "Signals", hint: "Who just raised" },
-  { href: "/openings", label: "Openings", hint: "Roles at funds and companies" },
-  { href: "/learn", label: "Learn", hint: "Bootcamps and courses" },
-  { href: "/network", label: "Network", hint: "Fairs, summits and demo days" },
+  { href: "/openings", label: "Openings", hint: "Open roles you can follow" },
+  { href: "/calendar", label: "Calendar", hint: "Bootcamps, courses and events" },
 ];
 
 export default function Shell({ children }: { children: React.ReactNode }) {

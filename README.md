@@ -1,12 +1,16 @@
 # baby vc radar
 
-A startup and VC radar for the baby vc alumni community. Five tabs over one dataset:
-funds and companies on a map, funding signals, open roles you can ping, learning
-programmes, and networking events.
+A startup and VC radar for the baby vc alumni community. Funds and companies on a
+map, funding signals, open roles you can follow, and one calendar of bootcamps and
+events.
 
-**This is a proof of concept.** Every record is static demo data written by hand in
-`src/data/`. There is no scraper, no API and no database behind it. The shape of the
-data is the real deliverable: swap the arrays for a fetch and nothing else has to change.
+**This is a proof of concept.** Every record is static demo data hand-written in
+`src/data/`. There is no scraper, no API and no database. The shape of the data is
+the real deliverable: swap the arrays for a fetch and nothing else has to change.
+
+> **Working on this repo?** Start with [`CLAUDE.md`](./CLAUDE.md) for the current
+> page flow and feature inventory, and [`DESIGN.md`](./DESIGN.md) for the brand
+> system and interaction rules. Both are kept current with the code.
 
 ---
 
@@ -17,54 +21,28 @@ npm install
 npm run dev        # http://localhost:3000
 ```
 
-```bash
-npm run build && npm start   # production build
-```
-
 Node 22. No environment variables, no API keys, no external services at runtime.
 
 ---
 
 ## The five tabs
 
+The app is organised around what someone came to do, not around data types.
+
 | Route | Tab | What it does |
 |---|---|---|
-| `/` | **Radar** | Every fund and company on the map. Filter by industry, stage, and sort by fastest growth, most recently raised or A–Z. Click a pin or a row for the full record. |
-| `/signals` | **Signals** | Funding rounds, newest first, filterable by industry and round. The five freshest ping on the map. Expanding a story shows the company's current metrics. |
-| `/openings` | **Openings** | Open roles at both funds and companies. Ping an employer and new listings from them surface in a banner at the top and as a badge in the nav. |
-| `/learn` | **Learn** | Bootcamps, fellowships, courses and accelerators, sorted by application deadline. Includes the baby vc bootcamps and Bending Spoons First Ascent by country. |
-| `/network` | **Network** | Conferences, summits, fairs and demo days with dates, price and who is in the room. Anything inside 60 days pings. |
+| `/` | **Today** | The briefing, and the landing page. No filters at all. What opened this week, who raised, what closes soon, what's next, and which funds have an alum inside with a role open. |
+| `/radar` | **Radar** | Every fund and company on the map, clustered by city so a marker reads "London · 18" instead of eighteen dots on top of each other. Click a city to filter the list. |
+| `/signals` | **Signals** | Funding rounds, newest first. A company that just raised is usually about to hire. |
+| `/openings` | **Openings** | Every open role. Follow an employer and their new roles reach you instead of you checking. |
+| `/calendar` | **Calendar** | Bootcamps, fellowships, conferences and fairs in one timeline, ordered by the date that forces a decision: the application deadline, or the event itself. |
 
-### The ping mechanism
+### Following and pings
 
-Watching an employer writes its id to `localStorage` under `bvc-radar:watchlist`.
-The openings tab intersects that list with roles flagged `isNew` and renders the
-alert; the nav badge reads the same list. In production this is the exact list you
-would hand to an email or push job. See `src/lib/watchlist.ts`.
-
----
-
-## Brand
-
-Taken from [babyvc.co/brandkit](https://www.babyvc.co/brandkit) and encoded as
-Tailwind v4 tokens in `src/app/globals.css`.
-
-| Token | Hex | Use |
-|---|---|---|
-| `yellow` | `#EEFB86` | Primary accent |
-| `ink` | `#0E110E` | Page background |
-| `ink-2` / `ink-3` | `#141813` / `#1B201A` | Cards, elevated surfaces |
-| `cream` | `#F4F3EC` | Body text |
-| `muted` / `dim` | `#A3A29A` / `#6B6A63` | Secondary and tertiary text |
-| `alert` | `#FF6B6B` | New and urgent markers |
-
-Typeface is **Lexend Deca**, loaded via `next/font`. Two brand rules are followed
-throughout: headings are large with body text at roughly half the heading size, and
-titles are always bold, never italic.
-
-The hand-drawn swoosh (`public/brand/underline-yellow.png`) marks the active tab and
-underlines every page heading. Logo assets in `public/brand/` are the official files,
-unmodified.
+Following an employer writes its id to `localStorage`. Openings and Today intersect
+that list with roles flagged new and surface them in a banner, plus a badge in the
+nav. In production this is the exact list you would hand to an email or push job.
+See `src/lib/watchlist.ts`.
 
 ---
 
@@ -76,58 +54,49 @@ unmodified.
 - no tile requests at runtime, so it works offline and costs nothing to serve
 - a vector world matches the map treatment on babyvc.co far better than raster tiles
 
-It projects `public/geo/countries-110m.json` (world-atlas, 108KB) with `d3-geo`'s
-Natural Earth projection into a fixed 1000×520 coordinate space, and applies pan and
-zoom as an SVG transform on top. On first render it frames itself to the bounding box
-of whatever pins it was given, so the Radar tab lands on Europe and the Learn tab
-zooms out far enough to include San Francisco, with no per-page configuration.
-The `FIT` / `EU` / `ALL` buttons re-frame; scroll wheel zooms; drag pans.
+It projects `public/geo/countries-110m.json` with d3-geo's Natural Earth projection,
+then drives pan and zoom through the SVG `viewBox` itself. The viewBox aspect is
+matched to the container via a `ResizeObserver`, so the visible rectangle is exactly
+what the maths says it is, zooming anchors on the cursor, and panning is clamped to
+the world's bounds.
+
+Markers are **clustered by city**. About 100 entities live across 40 cities, so
+London alone has 18 at identical coordinates. One marker per city, sized by count,
+click to filter.
 
 ---
 
-## Data model
+## Data
 
-`src/data/types.ts` is the contract. Six datasets:
+`src/data/types.ts` is the contract.
 
 ```
-vcs.ts        32 funds       thesis, AUM, stages, focus, deals TTM, alumni flag
+vcs.ts        32 funds       thesis, AUM, stages, focus, deals/yr, alumni flag
 startups.ts   69 companies   industry, stage, headcount, 6-month growth, backers
-news.ts       32 rounds      amount, round, investors, linked back to a company
-jobs.ts       39 roles       employer, level, comp, posted date, isNew flag
+news.ts       32 rounds      amount, round, investors, linked to a company
+jobs.ts       39 roles       employer, level, team, comp, posted date, isNew
 learning.ts   22 programmes  format, dates, deadline, cost, selectivity
-events.ts     22 events      format, dates, attendees, ticket price, crowd
+events.ts     22 events      format, dates, attendees, ticket, crowd
 ```
 
 Every city goes through `places.ts`, which maps a slug to a real `[lon, lat]` and
 throws at import time on a typo, so a bad city can never reach the map.
 
-### Replacing the demo data
+`src/lib/today.ts` pins "now" to 2026-09-09 so relative dates stay consistent.
+Swap it for `new Date()` when the data goes live.
 
-Each file exports a plain typed array. To go live, keep the types and change where the
-array comes from — a fetch in a server component, a database query, whatever. Nothing
-in the components reads anything but those exports and the ids that link them.
+**To go live:** keep the types, change where each array comes from. Nothing in the
+components reads anything but those exports and the ids that link them.
 
 ---
 
 ## Deploying
 
-The app is fully static (all six routes prerender) and has no server dependencies.
+All routes prerender static and there are no server dependencies.
 
 ```bash
 git remote add origin git@github.com:<you>/baby-vc-radar.git
 git push -u origin main
 ```
 
-Then import the repo on Vercel. No build settings to change, no environment variables
-to add. The Vercel defaults for Next.js are correct as-is.
-
----
-
-## Known scope
-
-Deliberately not built, because this is a proof of concept:
-
-- no scraping, ingestion or refresh of any kind
-- no accounts; the watchlist is per browser, not per person
-- no real notifications; pings render in-app rather than emailing
-- "new this week" is a static flag in the data, not computed against a crawl history
+Then import the repo on Vercel and accept the defaults. Nothing to configure.

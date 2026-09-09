@@ -1,138 +1,125 @@
 "use client";
 
+import Link from "next/link";
 import { useMemo, useState } from "react";
-import WorldMap, { type MapPin } from "@/components/WorldMap";
-import { Card, Empty, PageHead, Pill, Stat, Tag, ago, fmtDate } from "@/components/ui";
+import { FilterBar, Segmented } from "@/components/filters";
+import { Card, Empty, Growth, Tag, ago, fmtDate } from "@/components/ui";
 import { NEWS } from "@/data/news";
 import { STARTUP_BY_ID } from "@/data/startups";
 import type { Industry, Stage } from "@/data/types";
+import { TODAY } from "@/lib/today";
 
 const INDUSTRIES: Industry[] = ["AI / ML", "Fintech", "Climate", "Health", "SaaS", "Consumer", "Deeptech", "Mobility", "Cyber", "Space"];
 const ROUNDS: Stage[] = ["Pre-seed", "Seed", "Series A", "Series B", "Series C+"];
 
-/** Fixed "today" so the demo reads consistently no matter when it is opened. */
-const TODAY = new Date("2026-09-09T00:00:00Z");
+type Window = "30d" | "90d" | "all";
 
+/** No map here: a funding feed is a chronology, and geography answers nothing about it. */
 export default function SignalsPage() {
   const [industry, setIndustry] = useState<Industry | null>(null);
   const [round, setRound] = useState<Stage | null>(null);
-  const [selected, setSelected] = useState<string | null>(null);
+  const [win, setWin] = useState<Window>("all");
+  const [open, setOpen] = useState<string | null>(null);
 
-  const items = useMemo(
-    () =>
-      NEWS.filter((n) => (!industry || n.industry === industry) && (!round || n.round === round)).sort((a, b) =>
-        b.date.localeCompare(a.date),
-      ),
-    [industry, round],
-  );
-
-  const pins: MapPin[] = useMemo(
-    () =>
-      items.map((n, i) => ({
-        id: n.id,
-        coords: n.place.coords,
-        tone: "yellow",
-        weight: Math.max(0, 1 - i / 12),
-        label: n.startupName,
-        // The five freshest stories keep pinging.
-        pulse: i < 5,
-      })),
-    [items],
-  );
-
-  const last30 = NEWS.filter((n) => (TODAY.getTime() - new Date(n.date).getTime()) / 86400000 <= 30).length;
+  const items = useMemo(() => {
+    const limit = win === "30d" ? 30 : win === "90d" ? 90 : Infinity;
+    return NEWS.filter((n) => {
+      const age = Math.round((TODAY.getTime() - new Date(n.date + "T00:00:00Z").getTime()) / 86400000);
+      return (!industry || n.industry === industry) && (!round || n.round === round) && age <= limit;
+    }).sort((a, b) => b.date.localeCompare(a.date));
+  }, [industry, round, win]);
 
   return (
     <>
-      <PageHead
-        title="Signals"
-        sub="Every round the radar picked up, newest first. The five most recent are pinging on the map."
-        right={
-          <div className="flex gap-2">
-            <Stat value={last30} label="last 30 days" tone="yellow" />
-            <Stat value={NEWS.length} label="tracked rounds" />
-          </div>
+      <header className="mb-6">
+        <h1 className="relative inline-block text-4xl font-bold tracking-tight sm:text-5xl">
+          Signals
+          <span className="swoosh absolute -bottom-2 left-0 h-2 w-full opacity-90" aria-hidden />
+        </h1>
+        <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
+          Who just raised money, newest first. A company that raised recently is usually about to hire.
+        </p>
+      </header>
+
+      <FilterBar
+        primary={
+          <Segmented<Window>
+            options={[["all", "All time"], ["90d", "Last 90 days"], ["30d", "Last 30 days"]]}
+            value={win}
+            onChange={setWin}
+          />
         }
+        groups={[
+          { key: "industry", label: "Industry", options: INDUSTRIES, value: industry, onChange: (v) => setIndustry(v as Industry | null) },
+          { key: "round", label: "Round", options: ROUNDS, value: round, onChange: (v) => setRound(v as Stage | null) },
+        ]}
+        resultCount={items.length}
+        resultNoun="rounds"
       />
 
-      <div className="mb-5 space-y-2.5">
-        <div className="flex flex-wrap gap-1.5">
-          {INDUSTRIES.map((i) => (
-            <Pill key={i} active={industry === i} onClick={() => setIndustry(industry === i ? null : i)}>
-              {i}
-            </Pill>
-          ))}
-        </div>
-        <div className="flex flex-wrap items-center gap-1.5">
-          {ROUNDS.map((r) => (
-            <Pill key={r} active={round === r} onClick={() => setRound(round === r ? null : r)}>
-              {r}
-            </Pill>
-          ))}
-          {(industry || round) && (
-            <button
-              onClick={() => { setIndustry(null); setRound(null); }}
-              className="ml-1 text-xs text-dim underline underline-offset-4 hover:text-yellow"
-            >
-              clear
-            </button>
-          )}
-        </div>
-      </div>
-
-      <div className="grid gap-4 lg:grid-cols-[1fr_1.15fr]">
-        <div className="order-2 h-[40vh] min-h-[300px] lg:order-1 lg:sticky lg:top-24 lg:h-[calc(100vh-9rem)]">
-          <WorldMap pins={pins} selectedId={selected} onSelect={setSelected} />
-        </div>
-
-        <div className="order-1 space-y-2.5 lg:order-2 lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1">
-          {items.length === 0 ? (
-            <Empty>No rounds match that combination.</Empty>
-          ) : (
-            items.map((n) => {
-              const tracked = n.startupId ? STARTUP_BY_ID.get(n.startupId) : undefined;
-              return (
-                <Card
-                  key={n.id}
-                  active={selected === n.id}
-                  onClick={() => setSelected(selected === n.id ? null : n.id)}
-                >
-                  <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px]">
-                    <Tag tone="solid">{n.amount}</Tag>
-                    <Tag tone="yellow">{n.round}</Tag>
-                    <Tag>{n.industry}</Tag>
-                    <span className="text-dim">
-                      {n.place.city} · {ago(n.date, TODAY)}
-                    </span>
+      {items.length === 0 ? (
+        <Empty>No rounds in that window. Widen the date range or clear a filter.</Empty>
+      ) : (
+        <div className="space-y-2.5">
+          {items.map((n) => {
+            const s = n.startupId ? STARTUP_BY_ID.get(n.startupId) : undefined;
+            const isOpen = open === n.id;
+            return (
+              <Card key={n.id} active={isOpen} onClick={() => setOpen(isOpen ? null : n.id)}>
+                <div className="flex flex-wrap items-start justify-between gap-3">
+                  <div className="min-w-0 flex-1">
+                    <div className="mb-2 flex flex-wrap items-center gap-2 text-[11px]">
+                      <Tag tone="solid">{n.amount}</Tag>
+                      <Tag tone="yellow">{n.round}</Tag>
+                      <Tag>{n.industry}</Tag>
+                      <span className="text-dim">{n.place.city} · {ago(n.date, TODAY)}</span>
+                    </div>
+                    <h2 className="text-base leading-snug font-semibold">{n.headline}</h2>
+                    <p className="mt-1.5 text-sm leading-relaxed text-muted">{n.summary}</p>
                   </div>
-                  <h3 className="text-base leading-snug font-semibold">{n.headline}</h3>
-                  <p className="mt-1.5 text-sm leading-relaxed text-muted">{n.summary}</p>
-                  <div className="mt-3 flex flex-wrap items-center gap-x-4 gap-y-1 text-[11px] text-dim">
-                    <span>
-                      <span className="text-dim">Investors: </span>
-                      <span className="text-cream/80">{n.investors.join(", ")}</span>
-                    </span>
-                    <span>{fmtDate(n.date)}</span>
-                    <span>{n.source}</span>
-                  </div>
-                  {selected === n.id && tracked && (
-                    <div className="mt-3 grid grid-cols-3 gap-2 border-t border-line-soft pt-3">
-                      <MiniStat label="headcount" value={tracked.headcount.toLocaleString("en-GB")} />
-                      <MiniStat label="6mo growth" value={`${tracked.growth6m > 0 ? "+" : ""}${tracked.growth6m}%`} />
-                      <MiniStat label="raised" value={tracked.raisedTotal} />
+                  {s && (
+                    <div className="shrink-0 text-right">
+                      <Growth value={s.growth6m} />
+                      <div className="text-[10px] tracking-wider text-dim uppercase">6mo team</div>
                     </div>
                   )}
-                </Card>
-              );
-            })
-          )}
+                </div>
+
+                {isOpen && (
+                  <div className="mt-3 space-y-3 border-t border-line-soft pt-3">
+                    <div className="text-xs">
+                      <span className="text-dim">Who put money in: </span>
+                      <span className="text-cream/85">{n.investors.join(", ")}</span>
+                    </div>
+                    {s && (
+                      <div className="grid grid-cols-2 gap-3 sm:grid-cols-4">
+                        <Mini label="people" value={s.headcount.toLocaleString("en-GB")} />
+                        <Mini label="raised to date" value={s.raisedTotal} />
+                        <Mini label="stage" value={s.stage} />
+                        <Mini label="founded" value={String(s.founded)} />
+                      </div>
+                    )}
+                    <div className="flex flex-wrap items-center gap-3 text-[11px] text-dim">
+                      <span>{fmtDate(n.date)}</span>
+                      <span>{n.source}</span>
+                      {s && (
+                        <Link href={`/radar?focus=${s.id}`} onClick={(e) => e.stopPropagation()} className="font-semibold text-yellow underline underline-offset-4">
+                          Open {s.name} on the radar →
+                        </Link>
+                      )}
+                    </div>
+                  </div>
+                )}
+              </Card>
+            );
+          })}
         </div>
-      </div>
+      )}
     </>
   );
 }
 
-function MiniStat({ label, value }: { label: string; value: string }) {
+function Mini({ label, value }: { label: string; value: string }) {
   return (
     <div>
       <div className="text-sm font-semibold text-yellow tabular-nums">{value}</div>
