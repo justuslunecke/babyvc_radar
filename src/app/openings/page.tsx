@@ -149,7 +149,7 @@ export default function OpeningsPage() {
         {picker && (
           <div className="animate-rise mt-3 max-h-56 overflow-y-auto rounded-xl border border-line-soft bg-ink-2 p-3">
             <p className="mb-2.5 text-[11px] text-dim">
-              Following an employer puts their new roles at the top of this page and on Today.
+              Following an employer keeps their new roles easy to spot here.
             </p>
             <div className="flex flex-wrap gap-1.5">
               {EMPLOYERS.map((e) => (

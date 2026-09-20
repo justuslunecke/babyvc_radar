@@ -4,12 +4,13 @@ import { useEffect, useRef, useState } from "react";
 
 const OPEN_EVENT = "bvc-radar:open-intro";
 
-type Step = { target: string | null; label: string; title: string; body: string };
+type Step = { target: string | null; label: string; title: string; body: string; ideas?: string[] };
 
 const STEPS: Step[] = [
   { target: "information", label: "Information", title: "See what is going on.", body: "Start with top news, then explore startups or funds. Filter by location, sector, stage, funding and growth." },
   { target: "career", label: "Career", title: "Find a way in.", body: "See VC and startup roles, from internships to full-time jobs. Look for places that are hiring now or have a baby vc alum inside." },
   { target: "opportunities", label: "Opportunities", title: "Know where to show up.", body: "Find events, workshops, bootcamps and fellowships. Filter by location, time and type." },
+  { target: null, label: "Feature ideas", title: "Where this could go next.", body: "A few things I would be excited to add once this is real:", ideas: ["Opt in to news from the companies you care about", "Get a heads-up when a fitting opening appears", "Celebrate alumni moves, new roles and funding wins", "Save a personal shortlist of people, places and events"] },
   { target: null, label: "Thank you", title: "Thank you for your time.", body: "I would genuinely love to build this with baby vc. I think it could make the network more useful for alumni, fellows and anyone trying to find their way in." },
 ];
 
@@ -66,6 +67,7 @@ export default function IntroTour() {
             <p className="text-[10px] font-semibold tracking-[0.18em] text-yellow uppercase">{step + 1} / {STEPS.length} · {current.label}</p>
             <h2 id="intro-title" className="mt-2 text-2xl leading-tight font-bold tracking-tight">{current.title}</h2>
             <p className="mt-3 text-sm leading-relaxed text-muted">{current.body}</p>
+            {current.ideas && <ul className="mt-4 space-y-2 border-l border-yellow/35 pl-3 text-xs leading-relaxed text-cream/85">{current.ideas.map((idea) => <li key={idea}>{idea}</li>)}</ul>}
             {current.target && <><p className="mt-4 hidden text-[11px] font-semibold text-yellow md:block">↑ Find {current.label} in the top bar</p><p className="mt-4 text-[11px] font-semibold text-yellow md:hidden">↓ Find {current.label} in the bottom bar</p></>}
             <button onClick={() => final ? setOpen(false) : setStep((s) => s + 1)} className="mt-5 rounded-lg bg-yellow px-4 py-2.5 text-sm font-bold text-black transition hover:opacity-85 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-yellow focus:ring-offset-2 focus:ring-offset-ink-2">{final ? "Got it, let me look around" : "Next"}</button>
           </div>

@@ -4,6 +4,9 @@ A startup and VC radar for the baby vc alumni community. Funds and companies on 
 map, funding signals, open roles you can follow, and one calendar of bootcamps and
 events.
 
+The root URL redirects straight to **Information**. The Daily briefing was retired
+so the Radar is the only first impression.
+
 **This is a proof of concept.** Every record is static demo data hand-written in
 `src/data/`. There is no scraper, no API and no database. The shape of the data is
 the real deliverable: swap the arrays for a fetch and nothing else has to change.

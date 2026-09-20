@@ -32,7 +32,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
     <div className="grain flex min-h-screen flex-col">
       <header className="sticky top-0 z-50 hidden border-b border-line-soft bg-ink/85 backdrop-blur-xl md:block">
         <div className="mx-auto flex max-w-[1600px] items-center gap-6 px-6 py-3">
-          <Link href="/" className="flex shrink-0 items-center gap-2.5">
+          <Link href="/radar" className="flex shrink-0 items-center gap-2.5">
             <Image
               src="/brand/icon-square-yellow.png"
               alt=""
