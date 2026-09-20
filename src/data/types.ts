@@ -64,6 +64,8 @@ export interface Startup {
   backers: string[];
   blurb: string;
   site: string;
+  /** True if a baby vc alum currently works here. */
+  alumniInside?: boolean;
 }
 
 export type Entity = Vc | Startup;
@@ -103,6 +105,8 @@ export interface Job {
   comp: string;
   /** ISO date the listing appeared. */
   posted: string;
+  /** Estimated ISO start date in this proof-of-concept dataset. */
+  starts?: string;
   /** Flagged in the UI with a "new" marker. */
   isNew: boolean;
   url: string;

@@ -10,6 +10,7 @@ import { VCS } from "@/data/vcs";
 import { STARTUPS } from "@/data/startups";
 import { JOBS } from "@/data/jobs";
 import { NEWS } from "@/data/news";
+import { LEARNING } from "@/data/learning";
 import type { Industry, Stage, Startup, Vc } from "@/data/types";
 import { useWatchlist } from "@/lib/watchlist";
 
@@ -41,6 +42,7 @@ function Radar() {
   const [query, setQuery] = useState("");
   const [city, setCity] = useState<string | null>(null);
   const [newsOpen, setNewsOpen] = useState(false);
+  const [showMap, setShowMap] = useState(false);
   const { has, toggle } = useWatchlist();
 
   const q = query.trim().toLowerCase();
@@ -60,13 +62,12 @@ function Radar() {
 
   const startups = useMemo(() => {
     if (lens === "vc") return [];
-    // "Alumni inside" is a property of funds, so it excludes companies entirely.
-    if (alumniOnly) return [];
     return STARTUPS.filter(
       (s) =>
         (!industry || s.industry === industry) &&
         (!stage || s.stage === stage) &&
         (!hiringOnly || hiring.has(s.id)) &&
+        (!alumniOnly || !!s.alumniInside) &&
         (!q || s.name.toLowerCase().includes(q) || s.place.city.toLowerCase().includes(q)),
     );
   }, [lens, industry, stage, hiringOnly, alumniOnly, q, hiring]);
@@ -142,9 +143,13 @@ function Radar() {
         </div>
       </section>
 
+      <section className="mb-7 grid gap-3 rounded-xl border border-line-soft bg-ink-2 p-4 sm:grid-cols-[1.1fr_1.9fr]">
+        <div><p className="text-[10px] font-semibold tracking-[0.18em] text-yellow uppercase">More than funds</p><h2 className="mt-1 text-lg font-bold">Accelerators & incubators</h2><p className="mt-1 text-xs leading-relaxed text-muted">Early routes into the ecosystem, alongside startups and VC.</p></div>
+        <div className="flex flex-wrap content-center gap-2">{LEARNING.filter((x) => x.format === "Accelerator").slice(0, 4).map((x) => <Link key={x.id} href="/calendar?view=learn" className="rounded-lg border border-line-soft px-3 py-2 text-xs font-semibold text-cream transition hover:border-yellow/40 hover:text-yellow">{x.name}</Link>)}<Link href="/calendar?view=learn" className="rounded-lg bg-yellow px-3 py-2 text-xs font-bold text-black">See programmes →</Link></div>
+      </section>
+
       <div className="mb-4">
-        <p className="text-[10px] font-semibold tracking-[0.18em] text-dim uppercase">Explore the ecosystem</p>
-        <h2 className="mt-1 text-2xl font-bold">Startups and funds</h2>
+        <div className="flex flex-wrap items-end justify-between gap-3"><div><p className="text-[10px] font-semibold tracking-[0.18em] text-dim uppercase">Explore the ecosystem</p><h2 className="mt-1 text-2xl font-bold">Startups and funds</h2></div><button onClick={() => setShowMap((v) => !v)} className="rounded-lg border border-line-soft px-3 py-1.5 text-xs font-semibold text-muted transition hover:border-yellow/40 hover:text-cream">{showMap ? "Hide map" : "Show map"}</button></div>
       </div>
 
       <FilterBar
@@ -170,8 +175,8 @@ function Radar() {
         resultNoun={lens === "vc" ? "funds" : lens === "startup" ? "companies" : "on the map"}
       />
 
-      <div className="grid gap-4 lg:grid-cols-[1.5fr_1fr]">
-        <div className="h-[52vh] min-h-[380px] lg:sticky lg:top-24 lg:h-[calc(100vh-9rem)]">
+      <div className={`grid gap-4 ${showMap ? "lg:grid-cols-[1.5fr_1fr]" : ""}`}>
+        {showMap && <div className="h-[52vh] min-h-[380px] lg:sticky lg:top-24 lg:h-[calc(100vh-9rem)]">
           <WorldMap
             items={items}
             selectedId={selected}
@@ -186,9 +191,9 @@ function Radar() {
               <span className="flex items-center gap-2"><i className="size-2 rounded-full bg-yellow" /> company</span>
             </div>
           </WorldMap>
-        </div>
+        </div>}
 
-        <div className="lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1">
+        <div className={showMap ? "lg:max-h-[calc(100vh-9rem)] lg:overflow-y-auto lg:pr-1" : ""}>
           {active ? (
             <Detail entity={active} onClose={() => setSelected(null)} watched={has(active.id)} onWatch={() => toggle(active.id)} />
           ) : (
@@ -240,7 +245,7 @@ function Row({ entity, onClick }: { entity: Vc | Startup; onClick: () => void })
           <div className="flex items-center gap-2">
             <i className={`size-1.5 shrink-0 rounded-full ${isVc ? "bg-cream" : "bg-yellow"}`} />
             <h3 className="truncate font-semibold">{entity.name}</h3>
-            {isVc && entity.alumniInside && <Tag tone="yellow">alum inside</Tag>}
+            {entity.alumniInside && <Tag tone="yellow">alum inside</Tag>}
           </div>
           <p className="mt-1 truncate text-xs text-dim">
             {isVc
@@ -310,6 +315,7 @@ function Detail({ entity, onClose, watched, onWatch }: {
           </div>
           <Field label="Last round">{entity.lastRound} · {fmtDate(entity.lastRoundDate)}</Field>
           <Field label="Who backed them">{entity.backers.join(", ")}</Field>
+          {entity.alumniInside && <div className="rounded-lg border border-yellow/25 bg-yellow/5 px-3 py-2 text-xs text-yellow">A baby vc alum works here. Ask the community for context before applying cold.</div>}
         </>
       )}
 

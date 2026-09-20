@@ -55,6 +55,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
                 <Link
                   key={t.href}
                   href={t.href}
+                  data-tour-target={t.label.toLowerCase()}
                   title={t.hint}
                   className={`relative shrink-0 px-3 py-2 text-sm font-medium transition ${
                     active ? "text-cream" : "text-dim hover:text-muted"
@@ -121,7 +122,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             const active = path.startsWith(t.href);
             const badge = t.href === "/openings" && pinged > 0;
             return (
-              <Link key={t.href} href={t.href} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg text-[10px] font-semibold transition ${active ? "text-yellow" : "text-dim hover:text-muted"}`}>
+              <Link key={t.href} href={t.href} data-tour-target={t.label.toLowerCase()} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg text-[10px] font-semibold transition ${active ? "text-yellow" : "text-dim hover:text-muted"}`}>
                 <span className="relative"><NavIcon name={t.label} />{badge && <span className="absolute -top-1.5 -right-2 grid size-3.5 place-items-center rounded-full bg-alert text-[8px] font-bold text-black">{pinged}</span>}</span>
                 <span>{t.label}</span>
                 {active && <span className="absolute -bottom-2 h-0.5 w-6 rounded-full bg-yellow" aria-hidden />}

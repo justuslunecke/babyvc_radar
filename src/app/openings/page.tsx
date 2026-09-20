@@ -4,7 +4,7 @@ import Link from "next/link";
 import { useMemo, useState } from "react";
 import { FilterBar, Segmented } from "@/components/filters";
 import { Card, Empty, Tag, ago } from "@/components/ui";
-import { JOBS, NEW_JOBS } from "@/data/jobs";
+import { JOBS, NEW_JOBS, jobStartDate } from "@/data/jobs";
 import type { EntityKind, JobLevel } from "@/data/types";
 import { VCS } from "@/data/vcs";
 import { STARTUPS } from "@/data/startups";
@@ -12,6 +12,14 @@ import { TODAY } from "@/lib/today";
 import { useHydrated, useWatchlist } from "@/lib/watchlist";
 
 const LEVELS: JobLevel[] = ["Internship", "Analyst", "Associate", "Mid", "Senior", "Leadership"];
+const START_WINDOWS = ["October", "November or later", "Next summer"];
+const PAY_FLOORS = ["Listed pay", "80k+ listed", "100k+ listed"];
+const ALUMNI_EMPLOYERS = new Set([...VCS, ...STARTUPS].filter((e) => e.alumniInside).map((e) => e.id));
+
+function listedPay(job: (typeof JOBS)[number]) {
+  const match = job.comp.match(/(?:€|£|SEK |DKK |NOK )(\d+(?:\.\d+)?)/);
+  return match ? Number(match[1]) : 0;
+}
 
 /** Everyone with at least one open role, for the follow picker. */
 const EMPLOYERS = [...VCS, ...STARTUPS]
@@ -25,9 +33,12 @@ export default function OpeningsPage() {
   const [kind, setKind] = useState<Kind>("all");
   const [level, setLevel] = useState<JobLevel | null>(null);
   const [team, setTeam] = useState<string | null>(null);
+  const [start, setStart] = useState<string | null>(null);
+  const [pay, setPay] = useState<string | null>(null);
   const [remoteOnly, setRemoteOnly] = useState(false);
   const [newOnly, setNewOnly] = useState(false);
   const [followedOnly, setFollowedOnly] = useState(false);
+  const [alumniOnly, setAlumniOnly] = useState(false);
   const [query, setQuery] = useState("");
   const [picker, setPicker] = useState(false);
   const { ids, has, toggle } = useWatchlist();
@@ -44,12 +55,15 @@ export default function OpeningsPage() {
           (kind === "all" || j.employerKind === kind) &&
           (!level || j.level === level) &&
           (!team || j.team === team) &&
+          (!start || (start === "October" ? jobStartDate(j) < "2026-11-01" && j.level !== "Internship" : start === "November or later" ? jobStartDate(j) >= "2026-11-01" && j.level !== "Internship" : j.level === "Internship")) &&
+          (!pay || (pay === "Listed pay" ? listedPay(j) > 0 : pay === "80k+ listed" ? listedPay(j) >= 80 : listedPay(j) >= 100)) &&
           (!remoteOnly || j.remote) &&
           (!newOnly || j.isNew) &&
           (!followedOnly || ids.includes(j.employerId)) &&
+          (!alumniOnly || ALUMNI_EMPLOYERS.has(j.employerId)) &&
           (!q || j.title.toLowerCase().includes(q) || j.employerName.toLowerCase().includes(q) || j.place.city.toLowerCase().includes(q)),
       ).sort((a, b) => Number(b.isNew) - Number(a.isNew) || b.posted.localeCompare(a.posted)),
-    [kind, level, team, remoteOnly, newOnly, followedOnly, ids, q],
+    [kind, level, team, start, pay, remoteOnly, newOnly, followedOnly, alumniOnly, ids, q],
   );
 
   return (
@@ -60,7 +74,7 @@ export default function OpeningsPage() {
           <span className="swoosh absolute -bottom-2 left-0 h-2 w-full opacity-90" aria-hidden />
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
-          Roles at funds and startups, from internships to full-time. Follow the places you care about, and use the filters to find the right fit.
+          A cleaner way into the ecosystem: open roles, warm places to apply, and programmes worth knowing. Start with funds or companies, then narrow by timing, pay and fit.
         </p>
       </header>
 
@@ -101,15 +115,27 @@ export default function OpeningsPage() {
         groups={[
           { key: "level", label: "Seniority", options: LEVELS, value: level, onChange: (v) => setLevel(v as JobLevel | null) },
           { key: "team", label: "Team", options: teams, value: team, onChange: setTeam },
+          { key: "start", label: "Estimated start", options: START_WINDOWS, value: start, onChange: setStart },
+          { key: "pay", label: "Salary", options: PAY_FLOORS, value: pay, onChange: setPay },
         ]}
         toggles={[
           { key: "new", label: "New this week", value: newOnly, onChange: setNewOnly },
           { key: "remote", label: "Remote", value: remoteOnly, onChange: setRemoteOnly },
           { key: "followed", label: "Only who I follow", value: followedOnly, onChange: setFollowedOnly },
+          { key: "alumni", label: "Baby VC alum inside", value: alumniOnly, onChange: setAlumniOnly },
         ]}
         resultCount={jobs.length}
         resultNoun="roles"
       />
+
+      <section className="mb-5 grid gap-3 rounded-xl border border-yellow/20 bg-yellow/[0.04] p-4 sm:grid-cols-[1.3fr_1fr]">
+        <div>
+          <p className="text-[10px] font-semibold tracking-[0.18em] text-yellow uppercase">Warm paths in</p>
+          <h2 className="mt-1 text-base font-bold">Apply with context when an alum is inside.</h2>
+          <p className="mt-1 text-xs leading-relaxed text-muted">The yellow “alum inside” tag means a Baby VC connection may be able to share context or point you to the right person before you apply.</p>
+        </div>
+        <Link href="/calendar?view=learn" className="rounded-lg border border-line-soft bg-ink-2 px-3 py-3 text-xs text-muted transition hover:border-yellow/40 hover:text-cream"><span className="block font-semibold text-cream">Accelerators & incubators</span><span className="mt-1 block">Also explore fellowships, accelerator cohorts and practical programmes →</span></Link>
+      </section>
 
       {/* Follow picker, collapsed by default so it never competes with the listings. */}
       <div className="mb-5">
@@ -156,6 +182,7 @@ export default function OpeningsPage() {
                   {j.isNew && <Tag tone="alert">new</Tag>}
                   <Tag tone={j.employerKind === "vc" ? "line" : "yellow"}>{j.employerKind === "vc" ? "Fund" : "Company"}</Tag>
                   {j.remote && <Tag>Remote</Tag>}
+                  {ALUMNI_EMPLOYERS.has(j.employerId) && <Tag tone="yellow">alum inside</Tag>}
                 </div>
                 <button
                   onClick={() => toggle(j.employerId)}
@@ -175,6 +202,7 @@ export default function OpeningsPage() {
                 <Line k="Team" v={j.team} />
                 <Line k="Level" v={j.level} />
                 <Line k="Pay" v={j.comp} />
+                <Line k="Start" v={j.level === "Internship" ? "Next summer" : jobStartDate(j) === "2026-10-01" ? "October" : "November+"} />
               </dl>
 
               <div className="mt-auto flex items-center justify-between gap-2 border-t border-line-soft pt-3">

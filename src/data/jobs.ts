@@ -50,3 +50,10 @@ export const JOBS: Job[] = [
 
 /** Roles flagged as new, newest first. */
 export const NEW_JOBS = JOBS.filter((j) => j.isNew).sort((a, b) => b.posted.localeCompare(a.posted));
+
+/** A compact fallback for the demo until every source provides a confirmed start date. */
+export function jobStartDate(job: Job) {
+  if (job.starts) return job.starts;
+  if (job.level === "Internship") return "2027-06-01";
+  return job.isNew ? "2026-10-01" : "2026-11-03";
+}

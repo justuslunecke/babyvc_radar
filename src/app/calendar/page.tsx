@@ -57,6 +57,7 @@ function CalendarView() {
   const [openOnly, setOpenOnly] = useState(false);
   const [babyOnly, setBabyOnly] = useState(false);
   const [freeOnly, setFreeOnly] = useState(false);
+  const [soonOnly, setSoonOnly] = useState(false);
   const [query, setQuery] = useState("");
   const [showMap, setShowMap] = useState(false);
   const [city, setCity] = useState<string | null>(null);
@@ -116,12 +117,13 @@ function CalendarView() {
             (!openOnly || days >= 0) &&
             (!babyOnly || e.highlight) &&
             (!freeOnly || isFree) &&
+            (!soonOnly || (days >= 0 && days <= 45)) &&
             (!city || e.place.city === city) &&
             (!q || e.name.toLowerCase().includes(q) || e.place.city.toLowerCase().includes(q) || e.host.toLowerCase().includes(q))
           );
         })
         .sort((a, b) => a.keyDate.localeCompare(b.keyDate)),
-    [entries, kind, format, country, openOnly, babyOnly, freeOnly, city, q],
+    [entries, kind, format, country, openOnly, babyOnly, freeOnly, soonOnly, city, q],
   );
 
   const items: MapItem[] = useMemo(
@@ -165,11 +167,12 @@ function CalendarView() {
         searchPlaceholder="Search a programme, event or city…"
         groups={[
           { key: "format", label: "Type", options: formats, value: format, onChange: setFormat },
-          { key: "country", label: "Country", options: countries, value: country, onChange: setCountry },
+          { key: "country", label: "Location", options: countries, value: country, onChange: setCountry },
         ]}
         toggles={[
           { key: "open", label: "Still open", value: openOnly, onChange: setOpenOnly },
           { key: "free", label: "Free", value: freeOnly, onChange: setFreeOnly },
+          { key: "soon", label: "Within 45 days", value: soonOnly, onChange: setSoonOnly },
           { key: "baby", label: "baby vc only", value: babyOnly, onChange: setBabyOnly },
         ]}
         resultCount={rows.length}

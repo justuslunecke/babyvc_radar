@@ -31,8 +31,8 @@ The app is organised around what someone came to do, not around data types.
 
 | Route | Tab | What it does |
 |---|---|---|
-| `/radar` | **Information** | Expandable top news, then every fund and company on a city-clustered map. Filter for sector, stage, hiring and alumni connections. |
-| `/openings` | **Career** | Open VC and startup roles, including internships. Follow employers and surface warm paths with an alum inside. |
+| `/radar` | **Information** | Expandable top news, startups, funds, accelerators and incubators. The city map is optional; filter for sector, stage, hiring and alumni connections. |
+| `/openings` | **Career** | Open VC and startup roles, including internships. Filter for salary and estimated start date, follow employers and surface warm paths with an alum inside. |
 | `/calendar` | **Opportunities** | Bootcamps, fellowships, workshops and events in one timeline, filterable by location, time and type. |
 
 ### Following and pings
