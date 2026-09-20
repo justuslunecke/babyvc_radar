@@ -15,6 +15,15 @@ const TABS = [
   { href: "/calendar", label: "Calendar", hint: "Bootcamps, courses and events" },
 ];
 
+function NavIcon({ name }: { name: string }) {
+  const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
+  if (name === "Today") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><path {...common} d="M4 12h16M12 4v16M7.5 7.5l9 9M16.5 7.5l-9 9" /></svg>;
+  if (name === "Radar") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><circle {...common} cx="12" cy="12" r="8" /><circle {...common} cx="12" cy="12" r="2" /><path {...common} d="M12 4v2M20 12h-2M12 20v-2M4 12h2" /></svg>;
+  if (name === "Signals") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><path {...common} d="M4 17l5-5 3 3 7-8" /><path {...common} d="M15 7h4v4" /></svg>;
+  if (name === "Openings") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><path {...common} d="M8 7V5h8v2M4 9h16v10H4zM4 13h16M10 13v2h4v-2" /></svg>;
+  return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><rect {...common} x="4" y="5" width="16" height="15" rx="2" /><path {...common} d="M8 3v4M16 3v4M8 11h8M8 15h5" /></svg>;
+}
+
 export default function Shell({ children }: { children: React.ReactNode }) {
   const path = usePathname();
   const { ids } = useWatchlist();
@@ -25,8 +34,8 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
   return (
     <div className="grain flex min-h-screen flex-col">
-      <header className="sticky top-0 z-50 border-b border-line-soft bg-ink/85 backdrop-blur-xl">
-        <div className="mx-auto flex max-w-[1600px] items-center gap-6 px-4 py-3 sm:px-6">
+      <header className="sticky top-0 z-50 hidden border-b border-line-soft bg-ink/85 backdrop-blur-xl md:block">
+        <div className="mx-auto flex max-w-[1600px] items-center gap-6 px-6 py-3">
           <Link href="/" className="flex shrink-0 items-center gap-2.5">
             <Image
               src="/brand/icon-square-yellow.png"
@@ -42,7 +51,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             </span>
           </Link>
 
-          <nav className="flex flex-1 items-center gap-0.5 overflow-x-auto">
+          <nav className="flex flex-1 items-center justify-center gap-0.5" aria-label="Main navigation">
             {TABS.map((t) => {
               const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
               const badge = t.href === "/openings" && pinged > 0;
@@ -87,7 +96,15 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </div>
       </header>
 
-      <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-7 sm:px-6">{children}</main>
+      <header className="sticky top-0 z-50 flex items-center justify-between border-b border-line-soft bg-ink/85 px-4 py-3 backdrop-blur-xl md:hidden">
+        <Link href="/" className="flex items-center gap-2" aria-label="baby vc radar home">
+          <Image src="/brand/icon-square-yellow.png" alt="" width={28} height={28} className="size-7 rounded-md" priority />
+          <span className="text-xs font-bold tracking-tight text-cream">baby vc <span className="text-yellow">radar</span></span>
+        </Link>
+        <span className="text-[10px] font-semibold tracking-[0.16em] text-dim uppercase">ecosystem brief</span>
+      </header>
+
+      <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-7 pb-24 sm:px-6 md:pb-7">{children}</main>
 
       <footer className="mt-6 border-t border-line-soft">
         <div className="overflow-hidden py-3 whitespace-nowrap">
@@ -95,13 +112,28 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             {Array(10).fill("baby vc · radar · funds · founders · openings · learning · network").join("  ·  ")}
           </div>
         </div>
-        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2 px-4 pb-6 text-[11px] text-dim sm:px-6">
+        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2 px-4 pb-24 text-[11px] text-dim sm:px-6 md:pb-6">
           <span>
             Proof of concept. All records are static demo data, assembled by hand. No live scraping runs behind this build.
           </span>
           <span>baby vc · alumni tool</span>
         </div>
       </footer>
+      <nav className="fixed right-0 bottom-0 left-0 z-50 border-t border-line-soft bg-ink/95 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-xl md:hidden" aria-label="Main navigation">
+        <div className="mx-auto grid max-w-md grid-cols-5">
+          {TABS.map((t) => {
+            const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
+            const badge = t.href === "/openings" && pinged > 0;
+            return (
+              <Link key={t.href} href={t.href} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg text-[10px] font-semibold transition ${active ? "text-yellow" : "text-dim hover:text-muted"}`}>
+                <span className="relative"><NavIcon name={t.label} />{badge && <span className="absolute -top-1.5 -right-2 grid size-3.5 place-items-center rounded-full bg-alert text-[8px] font-bold text-black">{pinged}</span>}</span>
+                <span>{t.label}</span>
+                {active && <span className="absolute -bottom-2 h-0.5 w-6 rounded-full bg-yellow" aria-hidden />}
+              </Link>
+            );
+          })}
+        </div>
+      </nav>
       <IntroTour />
     </div>
   );
