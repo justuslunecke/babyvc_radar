@@ -88,6 +88,7 @@ Deep links between tabs: `/radar?focus=<entityId>` opens a record directly.
 | Filter drawer | `filters.tsx` | All long filter lists behind one button + count badge + removable chips. |
 | Entity detail panel | `/radar` | Funds and companies, with plain-language stat labels. |
 | Follow / ping | `/openings`, `/radar`, `/` | `localStorage`. Drives the banner and the nav badge. |
+| First-visit introduction | Every route | Honest proof-of-concept welcome plus a four-step tour. Reopen with `Start here` in the desktop header. |
 | Funding feed | `/signals` | Expandable rows with the company's current metrics. |
 | Unified calendar | `/calendar` | Programmes and events in one chronology, sorted by the actionable date. |
 | Optional map on calendar | `/calendar` | Hidden by default behind "Show on map". |

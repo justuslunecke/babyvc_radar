@@ -160,6 +160,9 @@ These exist because the first build was overwhelming. They are not optional.
    metrics, no jargon without a gloss.
 7. **Ten options is not a feature.** If a filter has more than ~6 values, it belongs in
    a drawer or a select, not a pill row.
+8. **First visit earns attention.** The welcome overlay makes the value proposition clear
+   before asking a newcomer to interpret a dense radar. It must always state that the
+   application build uses hand-curated demo data, and it must be dismissible and reopenable.
 
 ---
 

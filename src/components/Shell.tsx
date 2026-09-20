@@ -5,6 +5,7 @@ import Link from "next/link";
 import { usePathname } from "next/navigation";
 import { NEW_JOBS } from "@/data/jobs";
 import { useHydrated, useWatchlist } from "@/lib/watchlist";
+import IntroTour, { INTRO_OPEN_EVENT } from "@/components/IntroTour";
 
 const TABS = [
   { href: "/", label: "Today", hint: "What changed since you last looked" },
@@ -68,6 +69,13 @@ export default function Shell({ children }: { children: React.ReactNode }) {
             })}
           </nav>
 
+          <button
+            onClick={() => window.dispatchEvent(new Event(INTRO_OPEN_EVENT))}
+            className="hidden shrink-0 text-xs font-semibold text-muted underline decoration-line underline-offset-4 transition hover:text-cream focus:outline-none focus:ring-2 focus:ring-yellow md:block"
+          >
+            Start here
+          </button>
+
           <a
             href="https://www.babyvc.co"
             target="_blank"
@@ -94,6 +102,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           <span>baby vc · alumni tool</span>
         </div>
       </footer>
+      <IntroTour />
     </div>
   );
 }
