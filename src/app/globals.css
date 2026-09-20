@@ -72,8 +72,8 @@ body {
   background-size: 100% 100%;
 }
 
-/* Required first-visit tour. The card moves above the mobile dock so it can point
-   at the same destination without asking a phone user to interpret desktop UI. */
+/* The tour measures the visible navigation link and positions its outline/card
+   from that exact rectangle; desktop and mobile never share guessed coordinates. */
 .tutorial-bubble { z-index: 2; }
 .tutorial-target {
   position: fixed;

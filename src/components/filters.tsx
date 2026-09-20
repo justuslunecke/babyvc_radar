@@ -107,14 +107,14 @@ export function FilterBar({
   return (
     <div className="mb-5">
       <div className="flex flex-wrap items-center gap-2">
-        {primary}
+        {primary && <div className="w-full sm:w-auto">{primary}</div>}
 
         {onSearch && (
           <input
             value={search ?? ""}
             onChange={(e) => onSearch(e.target.value)}
             placeholder={searchPlaceholder}
-            className="min-w-0 flex-1 rounded-lg border border-line-soft bg-ink-2 px-3 py-2 text-xs text-cream outline-none placeholder:text-dim focus:border-yellow/50 sm:max-w-xs"
+            className="min-w-0 w-[calc(100%-5.5rem)] flex-1 rounded-lg border border-line-soft bg-ink-2 px-3 py-2 text-xs text-cream outline-none placeholder:text-dim focus:border-yellow/50 sm:w-auto sm:max-w-xs"
           />
         )}
 
@@ -182,7 +182,7 @@ export function FilterBar({
           </div>
         )}
 
-        <span className="ml-auto shrink-0 text-xs text-dim tabular-nums">
+        <span className="ml-auto shrink-0 text-xs text-dim tabular-nums sm:ml-auto">
           {resultCount} {resultNoun}
         </span>
       </div>

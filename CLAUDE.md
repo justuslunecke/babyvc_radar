@@ -87,7 +87,7 @@ Deep links between tabs: `/radar?focus=<entityId>` opens a record directly.
 | Filter drawer | `filters.tsx` | All long filter lists behind one button + count badge + removable chips. |
 | Entity detail panel | `/radar` | Funds and companies, with plain-language stat labels. |
 | Follow / ping | `/openings`, `/radar` | `localStorage`. Drives the banner and the nav badge. |
-| First-visit introduction | Every route | Short, required walkthrough on every hard refresh. It points to each nav item and is only dismissed after the final step. |
+| First-visit introduction | Every route | Short, required walkthrough on every hard refresh. It measures and points to the visible desktop or mobile nav item, then is only dismissed after the final step. |
 | Responsive navigation | Every route | Desktop uses the top navigation. Phones use a distinct fixed bottom bar with icons and labels. |
 | Career explorer | `/openings` | VC and startup roles, internships, salary and start-date filters, follow list and warm Baby VC alumni signals. |
 | Opportunities explorer | `/calendar` | Programmes, accelerators and events in one chronology, sorted by the actionable date. |

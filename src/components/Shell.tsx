@@ -101,7 +101,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <span className="text-[10px] font-semibold tracking-[0.16em] text-dim uppercase">ecosystem guide</span>
       </header>
 
-      <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-7 pb-24 sm:px-6 md:pb-7">{children}</main>
+      <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 pb-28 sm:px-6 sm:py-7 md:pb-7">{children}</main>
 
       <footer className="mt-6 border-t border-line-soft">
         <div className="overflow-hidden py-3 whitespace-nowrap">
@@ -116,13 +116,13 @@ export default function Shell({ children }: { children: React.ReactNode }) {
           <span>baby vc · alumni tool</span>
         </div>
       </footer>
-      <nav className="fixed right-0 bottom-0 left-0 z-50 border-t border-line-soft bg-ink/95 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-xl md:hidden" aria-label="Main navigation">
-        <div className="mx-auto grid max-w-md grid-cols-3">
+      <nav className="fixed right-0 bottom-0 left-0 z-50 border-t border-line-soft bg-ink/95 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-12px_28px_rgba(14,17,14,0.48)] backdrop-blur-xl md:hidden" aria-label="Main navigation">
+        <div className="mx-auto grid max-w-md grid-cols-3 gap-1">
           {TABS.map((t) => {
             const active = path.startsWith(t.href);
             const badge = t.href === "/openings" && pinged > 0;
             return (
-              <Link key={t.href} href={t.href} data-tour-target={t.label.toLowerCase()} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg text-[10px] font-semibold transition ${active ? "text-yellow" : "text-dim hover:text-muted"}`}>
+              <Link key={t.href} href={t.href} data-tour-target={t.label.toLowerCase()} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg text-[10px] font-semibold transition focus:outline-none focus:ring-2 focus:ring-yellow ${active ? "bg-yellow/10 text-yellow" : "text-dim hover:bg-ink-2 hover:text-muted"}`}>
                 <span className="relative"><NavIcon name={t.label} />{badge && <span className="absolute -top-1.5 -right-2 grid size-3.5 place-items-center rounded-full bg-alert text-[8px] font-bold text-black">{pinged}</span>}</span>
                 <span>{t.label}</span>
                 {active && <span className="absolute -bottom-2 h-0.5 w-6 rounded-full bg-yellow" aria-hidden />}
