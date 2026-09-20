@@ -84,20 +84,16 @@ body {
   border-radius: 0.6rem;
   box-shadow: 0 0 0 5px rgba(238, 251, 134, 0.08);
 }
-.tutorial-target-today { left: 31%; width: 4.75rem; }
-.tutorial-target-radar { left: 36%; width: 4.75rem; }
-.tutorial-target-signals { left: 42%; width: 5.5rem; }
-.tutorial-target-openings { left: 49%; width: 6.5rem; }
-.tutorial-target-calendar { left: 57%; width: 5.5rem; }
+.tutorial-target-information { left: 37%; width: 6.75rem; }
+.tutorial-target-career { left: 47%; width: 5.25rem; }
+.tutorial-target-opportunities { left: 55%; width: 8rem; }
 .tutorial-bubble:not(.max-w-xl) { position: fixed; top: 5.5rem; left: 50%; transform: translateX(-50%); }
 
 @media (max-width: 767px) {
   .tutorial-target { top: auto; bottom: 0.45rem; height: 3.5rem; width: calc(20% - 0.5rem); }
-  .tutorial-target-today { left: 0.25rem; }
-  .tutorial-target-radar { left: calc(20% + 0.1rem); }
-  .tutorial-target-signals { left: calc(40% + 0.1rem); }
-  .tutorial-target-openings { left: calc(60% + 0.1rem); }
-  .tutorial-target-calendar { left: calc(80% + 0.1rem); }
+  .tutorial-target-information { left: 0.25rem; width: calc(33.333% - 0.4rem); }
+  .tutorial-target-career { left: calc(33.333% + 0.1rem); width: calc(33.333% - 0.3rem); }
+  .tutorial-target-opportunities { left: calc(66.666% + 0.1rem); width: calc(33.333% - 0.35rem); }
   .tutorial-bubble:not(.max-w-xl) { top: auto; bottom: 5.4rem; }
 }
 

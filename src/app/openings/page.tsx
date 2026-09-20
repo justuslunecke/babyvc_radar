@@ -56,12 +56,11 @@ export default function OpeningsPage() {
     <>
       <header className="mb-6">
         <h1 className="relative inline-block text-4xl font-bold tracking-tight sm:text-5xl">
-          Openings
+          Career
           <span className="swoosh absolute -bottom-2 left-0 h-2 w-full opacity-90" aria-hidden />
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
-          Every open role at the funds and companies on the radar. Follow the ones you care about and new
-          roles reach you instead of you checking.
+          Roles at funds and startups, from internships to full-time. Follow the places you care about, and use the filters to find the right fit.
         </p>
       </header>
 

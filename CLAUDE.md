@@ -58,18 +58,15 @@ events) and every tab opened with 13–17 filter controls, which tested as
 overwhelming. See §7.1.
 
 ```
-/                 Today      ← landing. A briefing. Zero filters.
-/radar            Radar      ← the map. Funds + companies, clustered by city.
-/signals          Signals    ← funding rounds. List only, no map.
-/openings         Openings   ← open roles + the follow/ping system.
-/calendar         Calendar   ← learning programmes AND events in one timeline.
+/radar            Information    ← expandable news plus startup and fund explorer.
+/openings         Career         ← roles, internships and warm paths in.
+/calendar         Opportunities  ← learning programmes and events in one timeline.
 ```
 
-**Today** is the entry point and answers "what changed and what should I do".
-It has no filter controls at all. It shows: a one-sentence summary, the ping alert
-(or a prompt to set pings up), four panels (Closing soon / Just raised / New this
-week / Next up), and the **Alumni inside** band. Every panel deep-links into the tab
-that goes deeper.
+**Information** is the entry point and answers "what changed and who matters". It
+opens with three news items and a deliberate expand control, then hands into the
+startup and fund explorer. **Career** answers where to apply. **Opportunities**
+answers what to attend or apply for.
 
 Deep links between tabs: `/radar?focus=<entityId>` opens a record directly.
 `/calendar?view=events|learn` preselects a segment.
@@ -80,8 +77,7 @@ Deep links between tabs: `/radar?focus=<entityId>` opens a record directly.
 
 | Feature | Where | Notes |
 |---|---|---|
-| Today briefing | `/` | No filters. Personalised only by the follow list. |
-| Alumni-inside band | `/` | Funds with an alum **and** an open role. Deep-links to the record. |
+| Expandable news | `/radar` | Three current updates by default, expandable to the full feed. |
 | World map, city-clustered | `/radar`, `/calendar` | One marker per city with a count; click to filter the list. |
 | Map pan / zoom-to-cursor | `WorldMap.tsx` | viewBox-driven, aspect-correct, clamped to world bounds. |
 | Auto-fit framing | `WorldMap.tsx` | Frames the data once on load. `FIT` / `EU` buttons re-frame. |
@@ -90,8 +86,8 @@ Deep links between tabs: `/radar?focus=<entityId>` opens a record directly.
 | Follow / ping | `/openings`, `/radar`, `/` | `localStorage`. Drives the banner and the nav badge. |
 | First-visit introduction | Every route | Short, required walkthrough on every hard refresh. It points to each nav item and is only dismissed after the final step. |
 | Responsive navigation | Every route | Desktop uses the top navigation. Phones use a distinct fixed bottom bar with icons and labels. |
-| Funding feed | `/signals` | Expandable rows with the company's current metrics. |
-| Unified calendar | `/calendar` | Programmes and events in one chronology, sorted by the actionable date. |
+| Career explorer | `/openings` | VC and startup roles, internships, follow list and warm employer signals. |
+| Opportunities explorer | `/calendar` | Programmes and events in one chronology, sorted by the actionable date. |
 | Optional map on calendar | `/calendar` | Hidden by default behind "Show on map". |
 
 ### Not built (deliberate, this is a PoC)
@@ -133,8 +129,8 @@ src/
   app/
     layout.tsx          Lexend Deca + Shell
     globals.css         brand tokens (@theme), keyframes, grain  ← see DESIGN.md
-    page.tsx            Today
-    radar|signals|openings|calendar/page.tsx
+    page.tsx            Legacy briefing route
+    radar|signals|openings|calendar/page.tsx  ← nav exposes radar, openings and calendar
   components/
     Shell.tsx           header, nav (swoosh on active tab), badge, footer marquee
     WorldMap.tsx        d3-geo map: clustering, zoom, pan, auto-fit
@@ -157,8 +153,8 @@ public/geo/             countries-110m.json (world-atlas, 108KB)
    works offline, and a vector world matches babyvc.co. `d3-geo` + local TopoJSON.
 3. **Clustering by city is required.** ~100 entities across ~40 cities means London
    has 18 at identical coordinates. Individual pins stack into an unreadable blob.
-4. **Map only where geography answers something.** Removed from Signals; optional
-   and collapsed on Calendar.
+4. **Map only where geography answers something.** It belongs in Information; it is
+   optional and collapsed in Opportunities.
 5. **Learn + Network are one tab.** Both are "a place, a date, is it worth the trip".
    Two tabs was duplicated furniture.
 6. **`localStorage` reads go through `useSyncExternalStore`**, never `useState` +

@@ -1,5 +1,6 @@
 "use client";
 
+import Link from "next/link";
 import { Suspense, useMemo, useState } from "react";
 import { useSearchParams } from "next/navigation";
 import WorldMap, { type MapItem } from "@/components/WorldMap";
@@ -8,6 +9,7 @@ import { Card, Empty, Growth, Stat, Tag, fmtDate } from "@/components/ui";
 import { VCS } from "@/data/vcs";
 import { STARTUPS } from "@/data/startups";
 import { JOBS } from "@/data/jobs";
+import { NEWS } from "@/data/news";
 import type { Industry, Stage, Startup, Vc } from "@/data/types";
 import { useWatchlist } from "@/lib/watchlist";
 
@@ -38,6 +40,7 @@ function Radar() {
   const [sort, setSort] = useState<Sort>("growth");
   const [query, setQuery] = useState("");
   const [city, setCity] = useState<string | null>(null);
+  const [newsOpen, setNewsOpen] = useState(false);
   const { has, toggle } = useWatchlist();
 
   const q = query.trim().toLowerCase();
@@ -107,13 +110,42 @@ function Radar() {
     <>
       <header className="mb-6">
         <h1 className="relative inline-block text-4xl font-bold tracking-tight sm:text-5xl">
-          Radar
+          Information
           <span className="swoosh absolute -bottom-2 left-0 h-2 w-full opacity-90" aria-hidden />
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
-          Every fund and company, on the map. Cities show how many are there, click one to see the list.
+          News first, then the people and companies behind it. Use the explorer to find startups and funds worth following.
         </p>
       </header>
+
+      <section className="mb-7 rounded-xl border border-line-soft bg-ink-2 p-5">
+        <div className="flex flex-wrap items-end justify-between gap-3">
+          <div>
+            <p className="text-[10px] font-semibold tracking-[0.18em] text-yellow uppercase">News right now</p>
+            <h2 className="mt-1 text-xl font-bold">What moved in the ecosystem</h2>
+          </div>
+          <button onClick={() => setNewsOpen((v) => !v)} className="rounded-lg border border-yellow/40 px-3 py-1.5 text-xs font-semibold text-yellow transition hover:bg-yellow/10">
+            {newsOpen ? "Show less" : `See all ${NEWS.length} updates`}
+          </button>
+        </div>
+        <div className="mt-4 divide-y divide-line-soft">
+          {[...NEWS].sort((a, b) => b.date.localeCompare(a.date)).slice(0, newsOpen ? NEWS.length : 3).map((n) => (
+            <article key={n.id} className="flex flex-wrap items-start justify-between gap-3 py-3 first:pt-0 last:pb-0">
+              <div className="min-w-0 flex-1">
+                <div className="mb-1 flex flex-wrap items-center gap-2 text-[11px] text-dim"><Tag tone="yellow">{n.round}</Tag><span>{n.place.city}</span><span>{fmtDate(n.date)}</span></div>
+                <h3 className="text-sm font-semibold text-cream">{n.headline}</h3>
+                <p className="mt-1 text-xs leading-relaxed text-muted">{n.summary}</p>
+              </div>
+              <Link href={`/signals`} className="shrink-0 text-xs font-semibold text-yellow underline underline-offset-4">{n.amount} →</Link>
+            </article>
+          ))}
+        </div>
+      </section>
+
+      <div className="mb-4">
+        <p className="text-[10px] font-semibold tracking-[0.18em] text-dim uppercase">Explore the ecosystem</p>
+        <h2 className="mt-1 text-2xl font-bold">Startups and funds</h2>
+      </div>
 
       <FilterBar
         primary={

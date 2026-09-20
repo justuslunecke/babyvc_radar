@@ -25,23 +25,21 @@ Node 22. No environment variables, no API keys, no external services at runtime.
 
 ---
 
-## The five tabs
+## The three tabs
 
 The app is organised around what someone came to do, not around data types.
 
 | Route | Tab | What it does |
 |---|---|---|
-| `/` | **Today** | The briefing, and the landing page. No filters at all. What opened this week, who raised, what closes soon, what's next, and which funds have an alum inside with a role open. |
-| `/radar` | **Radar** | Every fund and company on the map, clustered by city so a marker reads "London · 18" instead of eighteen dots on top of each other. Click a city to filter the list. |
-| `/signals` | **Signals** | Funding rounds, newest first. A company that just raised is usually about to hire. |
-| `/openings` | **Openings** | Every open role. Follow an employer and their new roles reach you instead of you checking. |
-| `/calendar` | **Calendar** | Bootcamps, fellowships, conferences and fairs in one timeline, ordered by the date that forces a decision: the application deadline, or the event itself. |
+| `/radar` | **Information** | Expandable top news, then every fund and company on a city-clustered map. Filter for sector, stage, hiring and alumni connections. |
+| `/openings` | **Career** | Open VC and startup roles, including internships. Follow employers and surface warm paths with an alum inside. |
+| `/calendar` | **Opportunities** | Bootcamps, fellowships, workshops and events in one timeline, filterable by location, time and type. |
 
 ### Following and pings
 
-Following an employer writes its id to `localStorage`. Openings and Today intersect
-that list with roles flagged new and surface them in a banner, plus a badge in the
-nav. In production this is the exact list you would hand to an email or push job.
+Following an employer writes its id to `localStorage`. Career intersects that list
+with roles flagged new and surfaces them in a banner, plus a badge in the nav. In
+production this is the exact list you would hand to an email or push job.
 See `src/lib/watchlist.ts`.
 
 ---

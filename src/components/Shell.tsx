@@ -8,19 +8,15 @@ import { useHydrated, useWatchlist } from "@/lib/watchlist";
 import IntroTour, { INTRO_OPEN_EVENT } from "@/components/IntroTour";
 
 const TABS = [
-  { href: "/", label: "Today", hint: "What changed since you last looked" },
-  { href: "/radar", label: "Radar", hint: "Funds and companies on the map" },
-  { href: "/signals", label: "Signals", hint: "Who just raised" },
-  { href: "/openings", label: "Openings", hint: "Open roles you can follow" },
-  { href: "/calendar", label: "Calendar", hint: "Bootcamps, courses and events" },
+  { href: "/radar", label: "Information", hint: "News, startups and funds" },
+  { href: "/openings", label: "Career", hint: "Roles and warm paths in" },
+  { href: "/calendar", label: "Opportunities", hint: "Events, workshops and programmes" },
 ];
 
 function NavIcon({ name }: { name: string }) {
   const common = { fill: "none", stroke: "currentColor", strokeWidth: 1.8, strokeLinecap: "round" as const, strokeLinejoin: "round" as const };
-  if (name === "Today") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><path {...common} d="M4 12h16M12 4v16M7.5 7.5l9 9M16.5 7.5l-9 9" /></svg>;
-  if (name === "Radar") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><circle {...common} cx="12" cy="12" r="8" /><circle {...common} cx="12" cy="12" r="2" /><path {...common} d="M12 4v2M20 12h-2M12 20v-2M4 12h2" /></svg>;
-  if (name === "Signals") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><path {...common} d="M4 17l5-5 3 3 7-8" /><path {...common} d="M15 7h4v4" /></svg>;
-  if (name === "Openings") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><path {...common} d="M8 7V5h8v2M4 9h16v10H4zM4 13h16M10 13v2h4v-2" /></svg>;
+  if (name === "Information") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><circle {...common} cx="12" cy="12" r="8" /><circle {...common} cx="12" cy="12" r="2" /><path {...common} d="M12 4v2M20 12h-2M12 20v-2M4 12h2" /></svg>;
+  if (name === "Career") return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><path {...common} d="M8 7V5h8v2M4 9h16v10H4zM4 13h16M10 13v2h4v-2" /></svg>;
   return <svg viewBox="0 0 24 24" aria-hidden className="size-5"><rect {...common} x="4" y="5" width="16" height="15" rx="2" /><path {...common} d="M8 3v4M16 3v4M8 11h8M8 15h5" /></svg>;
 }
 
@@ -53,7 +49,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
           <nav className="flex flex-1 items-center justify-center gap-0.5" aria-label="Main navigation">
             {TABS.map((t) => {
-              const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
+              const active = path.startsWith(t.href);
               const badge = t.href === "/openings" && pinged > 0;
               return (
                 <Link
@@ -97,11 +93,11 @@ export default function Shell({ children }: { children: React.ReactNode }) {
       </header>
 
       <header className="sticky top-0 z-50 flex items-center justify-between border-b border-line-soft bg-ink/85 px-4 py-3 backdrop-blur-xl md:hidden">
-        <Link href="/" className="flex items-center gap-2" aria-label="baby vc radar home">
+        <Link href="/radar" className="flex items-center gap-2" aria-label="baby vc radar information">
           <Image src="/brand/icon-square-yellow.png" alt="" width={28} height={28} className="size-7 rounded-md" priority />
           <span className="text-xs font-bold tracking-tight text-cream">baby vc <span className="text-yellow">radar</span></span>
         </Link>
-        <span className="text-[10px] font-semibold tracking-[0.16em] text-dim uppercase">ecosystem brief</span>
+        <span className="text-[10px] font-semibold tracking-[0.16em] text-dim uppercase">ecosystem guide</span>
       </header>
 
       <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-7 pb-24 sm:px-6 md:pb-7">{children}</main>
@@ -120,9 +116,9 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         </div>
       </footer>
       <nav className="fixed right-0 bottom-0 left-0 z-50 border-t border-line-soft bg-ink/95 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] backdrop-blur-xl md:hidden" aria-label="Main navigation">
-        <div className="mx-auto grid max-w-md grid-cols-5">
+        <div className="mx-auto grid max-w-md grid-cols-3">
           {TABS.map((t) => {
-            const active = t.href === "/" ? path === "/" : path.startsWith(t.href);
+            const active = path.startsWith(t.href);
             const badge = t.href === "/openings" && pinged > 0;
             return (
               <Link key={t.href} href={t.href} className={`relative flex min-h-14 flex-col items-center justify-center gap-1 rounded-lg text-[10px] font-semibold transition ${active ? "text-yellow" : "text-dim hover:text-muted"}`}>

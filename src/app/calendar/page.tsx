@@ -144,12 +144,11 @@ function CalendarView() {
     <>
       <header className="mb-6">
         <h1 className="relative inline-block text-4xl font-bold tracking-tight sm:text-5xl">
-          Calendar
+          Opportunities
           <span className="swoosh absolute -bottom-2 left-0 h-2 w-full opacity-90" aria-hidden />
         </h1>
         <p className="mt-5 max-w-2xl text-sm leading-relaxed text-muted sm:text-base">
-          Bootcamps, courses, conferences and fairs in one timeline, ordered by the date that actually
-          matters: when you have to apply, or when to show up.
+          Events, workshops, bootcamps and fellowships in one place. Filter by location, time and type, then decide what is worth showing up for.
         </p>
       </header>
 

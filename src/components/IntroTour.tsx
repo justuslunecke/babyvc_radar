@@ -7,11 +7,9 @@ const OPEN_EVENT = "bvc-radar:open-intro";
 type Step = { target: string; label: string; title: string; body: string };
 
 const STEPS: Step[] = [
-  { target: "today", label: "Today", title: "Start with the short version.", body: "Today is your quick catch-up: new jobs, fresh rounds, deadlines and what is coming up." },
-  { target: "radar", label: "Radar", title: "See who is out there.", body: "Funds and startups in one place. Filter by city or sector, then sort for fastest growth." },
-  { target: "signals", label: "Signals", title: "See what just changed.", body: "New funding rounds, who invested, and which companies might be about to hire." },
-  { target: "openings", label: "Openings", title: "Find a way in.", body: "VC jobs, internships and roles at startups. Follow the places you would genuinely want to work." },
-  { target: "calendar", label: "Calendar", title: "Know where to show up.", body: "Events, workshops and programmes, from Bits & Pretzels to First Ascent. Filter by city or deadline." },
+  { target: "information", label: "Information", title: "See what is going on.", body: "Start with top news, then explore startups or funds. Filter by location, sector, stage, funding and growth." },
+  { target: "career", label: "Career", title: "Find a way in.", body: "See VC and startup roles, from internships to full-time jobs. Look for places that are hiring now or have a baby vc alum inside." },
+  { target: "opportunities", label: "Opportunities", title: "Know where to show up.", body: "Find events, workshops, bootcamps and fellowships. Filter by location, time and type." },
 ];
 
 export const INTRO_OPEN_EVENT = OPEN_EVENT;
@@ -33,15 +31,15 @@ export default function IntroTour() {
 
   return (
     <div className={`fixed inset-0 z-[70] ${intro ? "grid place-items-center p-4" : ""}`} role="dialog" aria-modal="true" aria-labelledby="intro-title">
-      <div className="absolute inset-0 bg-ink/82 backdrop-blur-[2px]" aria-hidden />
+      <div className="absolute inset-0 bg-ink/55" aria-hidden />
       {current && <div className={`tutorial-target tutorial-target-${current.target}`} aria-hidden />}
       <section className={`tutorial-bubble relative w-full border border-yellow/30 bg-ink-2 p-5 shadow-2xl sm:p-6 ${intro ? "max-w-xl rounded-2xl" : "mx-4 max-w-sm rounded-xl"}`}>
         {intro ? (
           <div className="animate-rise">
             <p className="text-[10px] font-semibold tracking-[0.2em] text-yellow uppercase">baby vc radar</p>
-            <h1 id="intro-title" className="mt-3 max-w-md text-3xl leading-[1.04] font-bold tracking-tight text-balance sm:text-4xl">A quick way to make venture feel less confusing.</h1>
-            <p className="mt-5 max-w-lg text-sm leading-relaxed text-muted sm:text-base">Hey, thanks for scanning this. I made it because it is weirdly hard to know what is happening in venture from the outside. This is my idea for making that easier.</p>
-            <p className="mt-4 text-xs leading-relaxed text-dim">This is a proof of concept with hand-picked demo data, but I would love to build the real version with baby vc.</p>
+            <h1 id="intro-title" className="mt-3 max-w-md text-3xl leading-[1.04] font-bold tracking-tight text-balance sm:text-4xl">This is a proof of concept.</h1>
+            <p className="mt-5 max-w-lg text-sm leading-relaxed text-muted sm:text-base">Hey, thanks for scanning this. I made it because venture can feel pretty closed-off when you are looking in from the outside. I wanted to make it easier to see what is actually going on.</p>
+            <p className="mt-4 text-xs leading-relaxed text-dim">The data is hand-picked for this application. The idea is a real, useful home for the whole ecosystem.</p>
             <button onClick={() => setStep(0)} className="mt-6 rounded-lg bg-yellow px-4 py-2.5 text-sm font-bold text-black transition hover:opacity-85 active:scale-[0.98] focus:outline-none focus:ring-2 focus:ring-yellow focus:ring-offset-2 focus:ring-offset-ink-2">Show me around</button>
           </div>
         ) : current ? (
