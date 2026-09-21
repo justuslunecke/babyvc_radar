@@ -75,6 +75,13 @@ body {
 /* The tour measures the visible navigation link and positions its outline/card
    from that exact rectangle; desktop and mobile never share guessed coordinates. */
 .tutorial-bubble { z-index: 2; }
+.tutorial-scrim {
+  position: absolute;
+  inset: 0;
+  background: rgba(14, 17, 14, 0.56);
+  backdrop-filter: blur(3px);
+}
+.tutorial-nav-blocker { position: absolute; z-index: 1; pointer-events: auto; }
 .tutorial-target {
   position: fixed;
   z-index: 1;
@@ -84,7 +91,14 @@ body {
 }
 .tutorial-bubble:not(.max-w-xl) { position: fixed; top: 5.5rem; left: 50%; transform: translateX(-50%); }
 
+@media (min-width: 768px) {
+  .tutorial-scrim { top: 3.625rem; }
+  .tutorial-nav-blocker { top: 0; right: 0; left: 0; height: 3.625rem; }
+}
+
 @media (max-width: 767px) {
+  .tutorial-scrim { bottom: calc(4.5rem + env(safe-area-inset-bottom)); }
+  .tutorial-nav-blocker { right: 0; bottom: 0; left: 0; height: calc(4.5rem + env(safe-area-inset-bottom)); }
   .tutorial-bubble:not(.max-w-xl) { top: auto; bottom: 5.4rem; }
 }
 

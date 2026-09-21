@@ -64,7 +64,8 @@ export default function IntroTour() {
 
   return (
     <div className={`fixed inset-0 z-[70] ${intro ? "grid place-items-center p-4" : ""}`} role="dialog" aria-modal="true" aria-labelledby="intro-title">
-      <div className="absolute inset-0 bg-ink/55" aria-hidden />
+      <div className="tutorial-scrim" aria-hidden />
+      <div className="tutorial-nav-blocker" aria-hidden />
       {current?.target && <div ref={targetOutline} className="tutorial-target" aria-hidden />}
       <section ref={bubble} className={`tutorial-bubble relative w-full border border-yellow/30 bg-ink-2 p-5 shadow-2xl sm:p-6 ${intro ? "max-w-xl rounded-2xl" : "max-w-sm rounded-xl"}`}>
         {intro ? (
