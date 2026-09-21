@@ -47,7 +47,7 @@ export default function IntroTour() {
       });
       const mobile = window.matchMedia("(max-width: 767px)").matches;
       Object.assign(bubble.current.style, mobile
-        ? { top: "auto", bottom: `${window.innerHeight - box.top + 16}px`, left: "1rem", right: "1rem", transform: "none", maxWidth: "none" }
+        ? { top: "auto", bottom: `${window.innerHeight - box.top + 16}px`, left: "1rem", right: "auto", width: "calc(100% - 2rem)", transform: "none", maxWidth: "none" }
         : { top: `${box.bottom + 18}px`, bottom: "auto", left: "50%", right: "auto", transform: "translateX(-50%)", maxWidth: "24rem" },
       );
     };
@@ -66,7 +66,7 @@ export default function IntroTour() {
     <div className={`fixed inset-0 z-[70] ${intro ? "grid place-items-center p-4" : ""}`} role="dialog" aria-modal="true" aria-labelledby="intro-title">
       <div className="absolute inset-0 bg-ink/55" aria-hidden />
       {current?.target && <div ref={targetOutline} className="tutorial-target" aria-hidden />}
-      <section ref={bubble} className={`tutorial-bubble relative w-full border border-yellow/30 bg-ink-2 p-5 shadow-2xl sm:p-6 ${intro ? "max-w-xl rounded-2xl" : "mx-4 max-w-sm rounded-xl"}`}>
+      <section ref={bubble} className={`tutorial-bubble relative w-full border border-yellow/30 bg-ink-2 p-5 shadow-2xl sm:p-6 ${intro ? "max-w-xl rounded-2xl" : "max-w-sm rounded-xl"}`}>
         {intro ? (
           <div className="animate-rise">
             <p className="text-[10px] font-semibold tracking-[0.2em] text-yellow uppercase">baby vc radar</p>
