@@ -10,7 +10,7 @@ const STEPS: Step[] = [
   { target: "information", label: "Information", title: "See what is going on.", body: "Start with top news, then explore startups or funds. Filter by location, sector, stage, funding and growth." },
   { target: "career", label: "Career", title: "Find a way in.", body: "See VC and startup roles, from internships to full-time jobs. Look for places that are hiring now or have a baby vc alum inside." },
   { target: "opportunities", label: "Opportunities", title: "Know where to show up.", body: "Find events, workshops, bootcamps and fellowships. Filter by location, time and type." },
-  { target: null, label: "Feature ideas", title: "Where this could go next.", body: "A few things I would be excited to add once this is real:", ideas: ["Opt in to news from the companies you care about", "Get a heads-up when a fitting opening appears", "Celebrate alumni moves, new roles and funding wins", "Save a personal shortlist of people, places and events"] },
+  { target: null, label: "Feature ideas", title: "Where this could go next.", body: "A couple of things I would be excited to build next:", ideas: ["Make this a proper iOS app", "Turn scattered group chats into one exchange forum, with discussions sorted by topic"] },
   { target: null, label: "Thank you", title: "Thank you for your time.", body: "I would genuinely love to build this with baby vc. I think it could make the network more useful for alumni, fellows and anyone trying to find their way in." },
 ];
 

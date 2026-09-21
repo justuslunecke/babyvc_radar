@@ -29,7 +29,7 @@ export default function Shell({ children }: { children: React.ReactNode }) {
   const pinged = hydrated ? NEW_JOBS.filter((j) => ids.includes(j.employerId)).length : 0;
 
   return (
-    <div className="grain flex min-h-screen flex-col">
+    <div className="grain flex h-[100dvh] flex-col overflow-hidden md:h-auto md:min-h-screen md:overflow-visible">
       <header className="sticky top-0 z-50 hidden border-b border-line-soft bg-ink/85 backdrop-blur-xl md:block">
         <div className="mx-auto flex max-w-[1600px] items-center gap-6 px-6 py-3">
           <Link href="/radar" className="flex shrink-0 items-center gap-2.5">
@@ -101,22 +101,24 @@ export default function Shell({ children }: { children: React.ReactNode }) {
         <span className="text-[10px] font-semibold tracking-[0.16em] text-dim uppercase">ecosystem guide</span>
       </header>
 
-      <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 pb-28 sm:px-6 sm:py-7 md:pb-7">{children}</main>
+      <div className="flex min-h-0 flex-1 flex-col overflow-y-auto overscroll-contain md:overflow-visible">
+        <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 sm:px-6 sm:py-7 md:pb-7">{children}</main>
 
-      <footer className="mt-6 border-t border-line-soft md:pb-0">
-        <div className="overflow-hidden py-3 whitespace-nowrap">
-          <div className="inline-block animate-marquee text-[11px] font-semibold tracking-[0.18em] text-yellow/15 uppercase">
-            {Array(10).fill("baby vc · radar · funds · founders · openings · learning · network").join("  ·  ")}
+        <footer className="mt-6 border-t border-line-soft">
+          <div className="overflow-hidden py-3 whitespace-nowrap">
+            <div className="inline-block animate-marquee text-[11px] font-semibold tracking-[0.18em] text-yellow/15 uppercase">
+              {Array(10).fill("baby vc · radar · funds · founders · openings · learning · network").join("  ·  ")}
+            </div>
           </div>
-        </div>
-        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2 px-4 pb-28 text-[11px] text-dim sm:px-6 md:pb-6">
-          <span>
-            Proof of concept. All records are static demo data, assembled by hand. No live scraping runs behind this build.
-          </span>
-          <span>baby vc · alumni tool</span>
-        </div>
-      </footer>
-      <nav className="fixed right-0 bottom-0 left-0 z-50 border-t border-line-soft bg-ink px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-12px_28px_rgba(14,17,14,0.48)] md:hidden" aria-label="Main navigation">
+          <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2 px-4 pb-6 text-[11px] text-dim sm:px-6">
+            <span>
+              Proof of concept. All records are static demo data, assembled by hand. No live scraping runs behind this build.
+            </span>
+            <span>baby vc · alumni tool</span>
+          </div>
+        </footer>
+      </div>
+      <nav className="relative z-50 shrink-0 border-t border-line-soft bg-ink px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-12px_28px_rgba(14,17,14,0.48)] md:hidden" aria-label="Main navigation">
         <div className="mx-auto grid max-w-md grid-cols-3 gap-1">
           {TABS.map((t) => {
             const active = path.startsWith(t.href);
