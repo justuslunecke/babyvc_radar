@@ -103,20 +103,20 @@ export default function Shell({ children }: { children: React.ReactNode }) {
 
       <main className="mx-auto w-full max-w-[1600px] flex-1 px-4 py-6 pb-28 sm:px-6 sm:py-7 md:pb-7">{children}</main>
 
-      <footer className="mt-6 border-t border-line-soft">
+      <footer className="mt-6 border-t border-line-soft md:pb-0">
         <div className="overflow-hidden py-3 whitespace-nowrap">
           <div className="inline-block animate-marquee text-[11px] font-semibold tracking-[0.18em] text-yellow/15 uppercase">
             {Array(10).fill("baby vc · radar · funds · founders · openings · learning · network").join("  ·  ")}
           </div>
         </div>
-        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2 px-4 pb-24 text-[11px] text-dim sm:px-6 md:pb-6">
+        <div className="mx-auto flex max-w-[1600px] flex-wrap items-center justify-between gap-2 px-4 pb-28 text-[11px] text-dim sm:px-6 md:pb-6">
           <span>
             Proof of concept. All records are static demo data, assembled by hand. No live scraping runs behind this build.
           </span>
           <span>baby vc · alumni tool</span>
         </div>
       </footer>
-      <nav className="fixed right-0 bottom-0 left-0 z-50 border-t border-line-soft bg-ink/95 px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-12px_28px_rgba(14,17,14,0.48)] backdrop-blur-xl md:hidden" aria-label="Main navigation">
+      <nav className="fixed right-0 bottom-0 left-0 z-50 border-t border-line-soft bg-ink px-2 pt-2 pb-[max(0.5rem,env(safe-area-inset-bottom))] shadow-[0_-12px_28px_rgba(14,17,14,0.48)] md:hidden" aria-label="Main navigation">
         <div className="mx-auto grid max-w-md grid-cols-3 gap-1">
           {TABS.map((t) => {
             const active = path.startsWith(t.href);
