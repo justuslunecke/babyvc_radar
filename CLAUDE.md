@@ -92,6 +92,7 @@ Deep links between tabs: `/radar?focus=<entityId>` opens a record directly.
 | Career explorer | `/openings` | VC and startup roles, internships, salary and start-date filters, follow list and warm Baby VC alumni signals. |
 | Opportunities explorer | `/calendar` | Programmes, accelerators and events in one chronology, sorted by the actionable date. |
 | Optional map on calendar | `/calendar` | Hidden by default behind "Show on map". |
+| Vercel Web Analytics | Root layout | Tracks deployed page views through `@vercel/analytics`; it has no visible UI. |
 
 ### Not built (deliberate, this is a PoC)
 
